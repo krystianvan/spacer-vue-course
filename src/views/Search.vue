@@ -1,6 +1,12 @@
 <template>
   <div class="wrapper">
     <div class="search">
+      <button @click="getRestaurants">GET RESTAURANT</button>
+      <ul>
+      <li v-for="item in restaurants" :key="item.id">
+        <p>{{ item.name }}</p>
+      </li>
+    </ul>
       <label for="search">Search</label>
       <input
       id="search"
@@ -28,10 +34,18 @@ export default {
     return {
       searchValue: '',
       results: [],
+      restaurants: [],
     };
   },
   methods: {
     // npm run lint -- --fix
+    getRestaurants() {
+      axios.get('https://localhost:5001/api/restaurant?pageSize=5&pageNumber=1')
+        .then((response) => {
+          console.log(response.data.items);
+          this.restaurants = response.data.items;
+        });
+    },
     // eslint-disable-next-line
     handleInput: debounce(function() {
       axios.get(`${API}/search?q=${this.searchValue}&media_type=image`)
@@ -46,6 +60,7 @@ export default {
   },
 };
 </script>
+
 <style lang="scss" scoped>
   .wrapper
   {
